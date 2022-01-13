@@ -16,7 +16,7 @@ function checksExistsUserAccount(request, response, next) {
   const user = users.find((user) => user.username === username);
 
   if(!user) {
-    return response.status(400).json({ message: "Username not found" });
+    return response.status(400).json({ error: "Username not found" });
   }
 
   request.user = user;
@@ -26,6 +26,12 @@ function checksExistsUserAccount(request, response, next) {
 
 app.post('/users', (request, response) => {
   const { name, username } = request.body;
+
+  const UsernameAlreadyExists = users.some(user => user.username === username);
+
+  if(UsernameAlreadyExists) {
+    return response.status(400).json({ error: "Username already exists" });
+  }
 
   const newUser = {
     id: uuidv4(),
@@ -73,6 +79,12 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 
   const { user } = request;
 
+  const todo = user.todos.find(todo => todo.id === id);
+
+  if(!todo) {
+    return response.status(400).json({ error: "Todo not found" });
+  }
+
   user.todos.map((todo) => {
     if(todo.id === id) {
       todo.title = title;
@@ -89,6 +101,12 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 
   const { user } = request;
 
+  const todo = user.todos.find(todo => todo.id === id);
+
+  if(!todo) {
+    return response.status(400).json({ error: "Todo not found" });
+  }
+
   user.todos.map((todo) => {
     if(todo.id === id) {
       todo.done = true
@@ -101,8 +119,12 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { user } = request;
   const { id } = request.params;
-  
-  const todo = user.todos.find(user => user.id === id);
+
+  const todo = user.todos.find(todo => todo.id === id);
+
+  if(!todo) {
+    return response.status(400).json({ error: "Todo not found" });
+  }
 
   user.todos.splice(todo, 1);
 
