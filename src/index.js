@@ -92,7 +92,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
     }
   });
 
-  return response.status(200).send();
+  return response.status(200).json(todo);
 
 });
 
@@ -113,7 +113,7 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
     }
   });
 
-  return response.status(200).send();
+  return response.status(200).json(todo);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
@@ -128,7 +128,7 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
 
   user.todos.splice(todo, 1);
 
-  return response.status(200).send();
+  return response.status(204).send();
 });
 
 module.exports = app;
