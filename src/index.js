@@ -16,7 +16,7 @@ function checksExistsUserAccount(request, response, next) {
   const user = users.find((user) => user.username === username);
 
   if(!user) {
-    return response.status(400).json({ error: "Username not found" });
+    return response.status(404).json({ error: "Username not found" });
   }
 
   request.user = user;
@@ -42,7 +42,7 @@ app.post('/users', (request, response) => {
 
   users.push(newUser);
 
-  return response.status(201).send();
+  return response.status(201).json(newUser);
 
 });
 
@@ -69,7 +69,7 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 
   user.todos.push(todo);
 
-  return response.status(200).json(todo);
+  return response.status(201).json(todo);
 
 });
 
@@ -82,7 +82,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todo = user.todos.find(todo => todo.id === id);
 
   if(!todo) {
-    return response.status(400).json({ error: "Todo not found" });
+    return response.status(404).json({ error: "Todo not found" });
   }
 
   user.todos.map((todo) => {
@@ -104,7 +104,7 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const todo = user.todos.find(todo => todo.id === id);
 
   if(!todo) {
-    return response.status(400).json({ error: "Todo not found" });
+    return response.status(404).json({ error: "Todo not found" });
   }
 
   user.todos.map((todo) => {
@@ -123,7 +123,7 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todo = user.todos.find(todo => todo.id === id);
 
   if(!todo) {
-    return response.status(400).json({ error: "Todo not found" });
+    return response.status(404).json({ error: "Todo not found" });
   }
 
   user.todos.splice(todo, 1);
